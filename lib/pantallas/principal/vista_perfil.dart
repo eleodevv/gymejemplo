@@ -5,9 +5,16 @@ import 'modelos.dart';
 
 class VistaPerfil extends StatelessWidget {
   final bool membresiaActiva;
+  final DateTime? fechaExpiracion;
   final VoidCallback onCerrarSesion;
 
-  const VistaPerfil({super.key, required this.membresiaActiva, required this.onCerrarSesion});
+  const VistaPerfil({super.key, required this.membresiaActiva, this.fechaExpiracion, required this.onCerrarSesion});
+
+  int get _diasRestantes {
+    if (fechaExpiracion == null) return 0;
+    final diff = fechaExpiracion!.difference(DateTime.now()).inDays;
+    return diff < 0 ? 0 : diff;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +55,12 @@ class VistaPerfil extends StatelessWidget {
                   children: [
                     Icon(membresiaActiva ? Icons.verified : Icons.cancel_outlined, size: 14, color: membresiaActiva ? AppColores.verdeAcento : Colors.grey),
                     const SizedBox(width: 6),
-                    Text(membresiaActiva ? 'Premium' : 'Sin membresía', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: membresiaActiva ? AppColores.verdeAcento : Colors.grey)),
+                    Text(
+                      membresiaActiva
+                          ? (fechaExpiracion != null ? '${_diasRestantes} días restantes' : 'Activa')
+                          : 'Sin membresía',
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: membresiaActiva ? AppColores.verdeAcento : Colors.grey),
+                    ),
                   ],
                 ),
               ),

@@ -23,7 +23,8 @@ class Rutina {
 }
 
 class VistaRutinas extends StatelessWidget {
-  VistaRutinas({super.key});
+  final bool membresiaActiva;
+  VistaRutinas({super.key, required this.membresiaActiva});
 
   final List<Rutina> _rutinas = [
     Rutina(
@@ -149,7 +150,13 @@ class VistaRutinas extends StatelessWidget {
 
   Widget _construirCardRutina(BuildContext context, Rutina rutina, bool esPrimero) {
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PantallaDetalleRutina(rutina: rutina))),
+      onTap: () {
+        if (!membresiaActiva) {
+          _mostrarBloqueado(context);
+          return;
+        }
+        Navigator.push(context, MaterialPageRoute(builder: (_) => PantallaDetalleRutina(rutina: rutina)));
+      },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
         child: Column(
@@ -170,6 +177,15 @@ class VistaRutinas extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (!membresiaActiva)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.black.withValues(alpha: 0.55),
+                      child: const Center(
+                        child: Icon(Icons.lock, color: Colors.white, size: 40),
+                      ),
+                    ),
+                  ),
                 Positioned(
                   left: 20, bottom: 20,
                   child: Text(rutina.titulo, style: TextStyle(fontSize: 44, fontWeight: FontWeight.w900, color: Colors.white, height: 0.95, fontStyle: FontStyle.italic, shadows: [Shadow(color: rutina.colorAccent.withValues(alpha: 0.5), blurRadius: 30)])),
@@ -194,6 +210,32 @@ class VistaRutinas extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
               child: Text(rutina.nivel, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColores.verdeAcento)),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _mostrarBloqueado(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        decoration: const BoxDecoration(color: AppColores.fondoCard, borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.08), shape: BoxShape.circle),
+              child: const Icon(Icons.lock, color: Colors.white, size: 32),
+            ),
+            const SizedBox(height: 16),
+            const Text('Contenido bloqueado', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
+            const SizedBox(height: 8),
+            Text('Necesitas una membresía activa para acceder a las rutinas. Habla con el administrador del gym.', textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.6), height: 1.5)),
+            const SizedBox(height: 24),
           ],
         ),
       ),

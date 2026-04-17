@@ -21,7 +21,8 @@ class PantallaHome extends StatefulWidget {
 
 class _EstadoPantallaHome extends State<PantallaHome> {
   int _indiceNav = 0;
-  bool _membresiaActiva = true;
+  bool _membresiaActiva = false;
+  DateTime? _fechaExpiracion;
 
   final List<Programa> _programas = [
     Programa(
@@ -101,19 +102,20 @@ class _EstadoPantallaHome extends State<PantallaHome> {
   Widget _construirContenido() {
     switch (_indiceNav) {
       case 0:
-        return VistaProgramas(programas: _programas);
+        return VistaProgramas(programas: _programas, membresiaActiva: _membresiaActiva);
       case 1:
-        return VistaRutinas();
+        return VistaRutinas(membresiaActiva: _membresiaActiva);
       case 2:
         return const VistaProgreso();
       case 3:
         return VistaMembresia(
           membresiaActiva: _membresiaActiva,
-          onMembresiaChanged: (activa) => setState(() => _membresiaActiva = activa),
+          fechaExpiracion: _fechaExpiracion,
         );
       case 4:
         return VistaPerfil(
           membresiaActiva: _membresiaActiva,
+          fechaExpiracion: _fechaExpiracion,
           onCerrarSesion: () {
             // Navegar al login
           },
