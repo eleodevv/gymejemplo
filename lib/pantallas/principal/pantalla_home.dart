@@ -121,7 +121,7 @@ class _EstadoPantallaHome extends State<PantallaHome> {
           },
         );
       default:
-        return VistaProgramas(programas: _programas);
+        return VistaProgramas(programas: _programas, membresiaActiva: _membresiaActiva);
     }
   }
 
